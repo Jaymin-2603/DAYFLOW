@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DayFlow - Login</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        :root {
+            --primary-color: #e97f62;
+            --light-text: #e0e0e0;
+            --border-color: #555;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+        
+        .login-container {
+            background: rgba(42, 42, 42, 0.95);
+            border: 2px solid var(--primary-color);
+            border-radius: 12px;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 8px 32px rgba(233, 127, 98, 0.2);
+        }
+        
+        .login-logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .login-logo i {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .login-logo h1 {
+            font-size: 1.75rem;
+            font-weight: bold;
+            color: var(--light-text);
+        }
+        
+        .login-logo p {
+            color: #999;
+            font-size: 0.9rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--light-text);
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background-color: #1a1a1a;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--light-text);
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 10px rgba(233, 127, 98, 0.3);
+        }
+        
+        .form-group input::placeholder {
+            color: #666;
+        }
+        
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .remember-forgot label {
+            display: flex;
+            align-items: center;
+            margin: 0;
+            color: #999;
+            cursor: pointer;
+        }
+        
+        .remember-forgot input[type="checkbox"] {
+            margin-right: 0.5rem;
+            cursor: pointer;
+        }
+        
+        .remember-forgot a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .remember-forgot a:hover {
+            color: #fff;
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 0.85rem;
+            background: linear-gradient(135deg, var(--primary-color), #d46a4a);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(233, 127, 98, 0.4);
+        }
+        
+        .login-btn:active {
+            transform: translateY(0);
+        }
+        
+        .login-footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+            color: #999;
+            font-size: 0.9rem;
+        }
+        
+        .login-footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .login-footer a:hover {
+            text-decoration: underline;
+        }
+        
+        .error-message {
+            background-color: #ef4444;
+            color: white;
+            padding: 0.75rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            display: none;
+            font-size: 0.9rem;
+        }
+        
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <!-- Logo -->
+        <div class="login-logo">
+            <i class="fas fa-briefcase"></i>
+            <h1>DayFlow</h1>
+            <p>Employee Management System</p>
+        </div>
+        
+        <!-- Error Message -->
+        <div id="errorMessage" class="error-message"></div>
+        
+        <!-- Login Form -->
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label for="loginId">
+                    <i class="fas fa-user"></i> Login ID / Email
+                </label>
+                <input 
+                    type="text" 
+                    id="loginId" 
+                    placeholder="Enter your Login ID or Email" 
+                    required
+                >
+            </div>
+            
+            <div class="form-group">
+                <label for="password">
+                    <i class="fas fa-lock"></i> Password
+                </label>
+                <div style="display: flex; align-items: center; position: relative;">
+                    <input 
+                        type="password" 
+                        id="password" 
+                        placeholder="Enter your password" 
+                        required
+                        style="flex: 1; padding-right: 2.5rem;"
+                    >
+                    <button 
+                        type="button" 
+                        onclick="togglePasswordVisibility()" 
+                        style="
+                            position: absolute;
+                            right: 0.75rem;
+                            background: none;
+                            border: none;
+                            color: var(--primary-color);
+                            cursor: pointer;
+                            padding: 0.5rem;
+                        "
+                    >
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="remember-forgot">
+                <label>
+                    <input type="checkbox" id="rememberMe" onchange="handleRememberMe()">
+                    Remember me
+                </label>
+                <a href="#" onclick="handleForgotPassword(event)">Forgot Password?</a>
+            </div>
+            
+            <button type="submit" class="login-btn">
+                <span class="loading-spinner" id="loadingSpinner"></span>
+                <span id="loginBtnText">
+                    <i class="fas fa-sign-in-alt"></i> Sign In
+                </span>
+            </button>
+        </form>
+        
+        <!-- Footer -->
+        <div class="login-footer">
+            Contact HR to create your account
+        </div>
+    </div>
+
+    <!-- Change Password Modal (for first-time login) -->
+    <div id="changePasswordModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0,0,0,0.7); z-index: 1000; display: flex; align-items: center; justify-content: center;">
+        <div style="background-color: #252525; border: 2px solid var(--primary-color); border-radius: 12px; padding: 2rem; max-width: 500px; width: 90%; box-shadow: 0 8px 32px rgba(233, 127, 98, 0.2);">
+            <h2 style="color: var(--primary-color); margin-bottom: 1rem; font-size: 1.5rem; font-weight: bold;">
+                <i class="fas fa-lock"></i> Change Your Password
+            </h2>
+            <p style="color: #ccc; margin-bottom: 1.5rem;">
+                This is your first login. Please change your password to continue.
+            </p>
+            
+            <form id="changePasswordForm" onsubmit="handlePasswordChange(event)">
+                <div id="modalErrorMessage" class="error-message"></div>
+                
+                <div class="form-group">
+                    <label for="firstPasswordInput">New Password</label>
+                    <input 
+                        type="password" 
+                        id="firstPasswordInput" 
+                        placeholder="Enter new password" 
+                        required
+                    >
+                    <small style="color: #999; margin-top: 0.5rem; display: block;">
+                        Password must be at least 6 characters
+                    </small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirmPasswordInput">Confirm Password</label>
+                    <input 
+                        type="password" 
+                        id="confirmPasswordInput" 
+                        placeholder="Confirm password" 
+                        required
+                    >
+                </div>
+                
+                <button type="submit" class="login-btn" style="margin-top: 1rem;">
+                    <i class="fas fa-check"></i> Update Password
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/login.js"></script>
+</body>
+</html>

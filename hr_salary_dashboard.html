@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DayFlow - HR Salary Management</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-logo">
+            <i class="fas fa-briefcase"></i> DayFlow
+        </div>
+        <ul class="nav-links">
+            <li><a href="admin_profile.html">Dashboard</a></li>
+            <li><a href="hr_salary_dashboard.html" style="color: var(--primary-color); font-weight: bold;">Salary</a></li>
+            <li><a href="signup.html">Add Employee</a></li>
+        </ul>
+        <div class="nav-profile">
+            <div class="profile-badge" title="Profile">A</div>
+            <div class="message-badge" title="Messages">
+                <i class="fas fa-envelope" style="color: white;"></i>
+            </div>
+            <button onclick="logout()" style="background: none; border: none; color: var(--primary-color); cursor: pointer; font-size: 1.2rem; margin-left: 1rem;" title="Logout">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div style="max-width: 1400px; margin: 2rem auto; padding: 0 2rem;">
+        <!-- Header -->
+        <div style="background-color: #1a1a1a; padding: 2rem; border-bottom: 2px solid var(--border-color); margin-bottom: 2rem; border-radius: 8px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1 style="font-size: 2rem; font-weight: bold; color: var(--primary-color); margin-bottom: 0.5rem;">
+                        <i class="fas fa-chart-pie"></i> Salary Management Dashboard
+                    </h1>
+                    <p style="color: #999;">View and manage all employees' salary structures</p>
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                    <input type="text" id="searchEmployee" placeholder="Search employee..." style="padding: 0.75rem; border-radius: 4px; border: 1px solid var(--border-color); background-color: #252525; color: #f0f0f0;">
+                    <button onclick="exportSalaryData()" style="padding: 0.75rem 1.5rem; background-color: var(--primary-color); color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">
+                        <i class="fas fa-download"></i> Export
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Salary Summary Cards -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+            <div style="background-color: #252525; padding: 1.5rem; border-radius: 8px; border-left: 4px solid var(--primary-color);">
+                <p style="color: #999; font-size: 0.9rem; margin-bottom: 0.5rem;">Total Employees</p>
+                <p id="totalEmployees" style="font-size: 2rem; font-weight: bold; color: var(--primary-color);">0</p>
+            </div>
+            <div style="background-color: #252525; padding: 1.5rem; border-radius: 8px; border-left: 4px solid var(--secondary-color);">
+                <p style="color: #999; font-size: 0.9rem; margin-bottom: 0.5rem;">Total Monthly Payroll</p>
+                <p id="totalPayroll" style="font-size: 2rem; font-weight: bold; color: var(--secondary-color);">₹0</p>
+            </div>
+            <div style="background-color: #252525; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #4ade80;">
+                <p style="color: #999; font-size: 0.9rem; margin-bottom: 0.5rem;">Average Salary</p>
+                <p id="averageSalary" style="font-size: 2rem; font-weight: bold; color: #4ade80;">₹0</p>
+            </div>
+        </div>
+
+        <!-- Filters and View Options -->
+        <div style="background-color: #252525; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem; border: 1px solid var(--border-color);">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                <div>
+                    <label style="color: #999; font-size: 0.9rem;">Filter by Department</label>
+                    <select id="departmentFilter" onchange="filterSalaryData()" style="width: 100%; padding: 0.75rem; border-radius: 4px; border: 1px solid var(--border-color); background-color: #1a1a1a; color: #f0f0f0; margin-top: 0.5rem;">
+                        <option value="">All Departments</option>
+                        <option value="IT">IT</option>
+                        <option value="HR">HR</option>
+                        <option value="Finance">Finance</option>
+                        <option value="Operations">Operations</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="color: #999; font-size: 0.9rem;">Sort by</label>
+                    <select id="sortBy" onchange="filterSalaryData()" style="width: 100%; padding: 0.75rem; border-radius: 4px; border: 1px solid var(--border-color); background-color: #1a1a1a; color: #f0f0f0; margin-top: 0.5rem;">
+                        <option value="name">Name (A-Z)</option>
+                        <option value="salary_asc">Salary (Low to High)</option>
+                        <option value="salary_desc">Salary (High to Low)</option>
+                        <option value="department">Department</option>
+                    </select>
+                </div>
+                <div style="display: flex; align-items: flex-end; gap: 1rem;">
+                    <button onclick="resetFilters()" style="flex: 1; padding: 0.75rem; background-color: #444; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                        <i class="fas fa-redo"></i> Reset Filters
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Salary Table -->
+        <div style="background-color: #252525; border-radius: 8px; border: 1px solid var(--border-color); overflow-x: auto;">
+            <table style="width: 100%; text-align: left; color: #f0f0f0;">
+                <thead style="background-color: #1a1a1a; border-bottom: 2px solid var(--border-color);">
+                    <tr>
+                        <th style="padding: 1rem;">Employee Name</th>
+                        <th style="padding: 1rem;">Department</th>
+                        <th style="padding: 1rem;">Position</th>
+                        <th style="padding: 1rem;">Monthly Wage</th>
+                        <th style="padding: 1rem;">Gross Salary</th>
+                        <th style="padding: 1rem;">Deductions</th>
+                        <th style="padding: 1rem;">Net Salary</th>
+                        <th style="padding: 1rem;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="salaryTableBody">
+                    <tr>
+                        <td colspan="8" style="padding: 2rem; text-align: center; color: #999;">
+                            <i class="fas fa-spinner fa-spin" style="font-size: 1.5rem;"></i> Loading employee data...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Employee Salary Modal -->
+    <div id="salaryModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0,0,0,0.7); z-index: 1000; overflow-y: auto;">
+        <div style="background-color: #252525; margin: 2rem auto; border-radius: 8px; border: 1px solid var(--border-color); max-width: 800px; padding: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 2px solid var(--border-color); padding-bottom: 1rem;">
+                <h2 id="modalEmployeeName" style="font-size: 1.5rem; font-weight: bold; color: var(--primary-color);">Employee Salary Details</h2>
+                <button onclick="closeSalaryModal()" style="background: none; border: none; font-size: 1.5rem; color: #999; cursor: pointer;">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div id="salaryModalContent" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; max-height: 500px; overflow-y: auto;">
+                <!-- Content will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script src="js/hr_salary_dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DayFlow - Add Employee (HR Only)</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%);
+            min-height: 100vh;
+        }
+        
+        .signup-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .signup-card {
+            background: rgba(42, 42, 42, 0.95);
+            border: 2px solid var(--primary-color);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(233, 127, 98, 0.2);
+        }
+        
+        .signup-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        .signup-header i {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .signup-header h1 {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--light-text);
+            margin-bottom: 0.5rem;
+        }
+        
+        .signup-header p {
+            color: #999;
+            font-size: 0.95rem;
+        }
+        
+        .hr-only-badge {
+            background-color: #3b5998;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 0.5rem;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group label {
+            margin-bottom: 0.5rem;
+            color: var(--light-text);
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+        
+        .form-group input,
+        .form-group select {
+            padding: 0.75rem 1rem;
+            background-color: #1a1a1a;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--light-text);
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 10px rgba(233, 127, 98, 0.3);
+        }
+        
+        .form-group input::placeholder {
+            color: #666;
+        }
+        
+        .auto-generated {
+            background-color: #1a1a1a;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .auto-generated h3 {
+            color: var(--primary-color);
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            font-weight: bold;
+        }
+        
+        .auto-generated-item {
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .auto-generated-item label {
+            color: #999;
+            font-size: 0.85rem;
+            margin: 0;
+            min-width: 120px;
+        }
+        
+        .auto-generated-item code {
+            background-color: #252525;
+            padding: 0.5rem 0.75rem;
+            border-radius: 4px;
+            color: #4ade80;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .copy-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.3rem 0.6rem;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: all 0.3s;
+        }
+        
+        .copy-btn:hover {
+            background-color: #d46a4a;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 0.85rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), #d46a4a);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(233, 127, 98, 0.4);
+        }
+        
+        .btn-secondary {
+            background-color: var(--border-color);
+            color: var(--light-text);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #555;
+        }
+        
+        .error-message {
+            background-color: #ef4444;
+            color: white;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        
+        .success-message {
+            background-color: #4ade80;
+            color: white;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        
+        .required {
+            color: #ef4444;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-logo">
+            <i class="fas fa-briefcase"></i> DayFlow
+        </div>
+        <ul class="nav-links">
+            <li><a href="#employees">Employees</a></li>
+            <li><a href="#settings">Settings</a></li>
+        </ul>
+        <div class="nav-profile">
+            <div class="profile-badge" title="Profile">A</div>
+            <button onclick="logout()" style="background: none; border: none; color: #e97f62; cursor: pointer; font-size: 1.2rem; margin-left: 1rem;" title="Logout">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+        </div>
+    </nav>
+
+    <div class="signup-container">
+        <div class="signup-card">
+            <!-- Header -->
+            <div class="signup-header">
+                <i class="fas fa-user-plus"></i>
+                <h1>Add New Employee</h1>
+                <p>Register a new employee in the system</p>
+                <div class="hr-only-badge">
+                    <i class="fas fa-lock"></i> HR Access Only
+                </div>
+            </div>
+            
+            <!-- Messages -->
+            <div id="errorMessage" class="error-message"></div>
+            <div id="successMessage" class="success-message"></div>
+            
+            <!-- Form -->
+            <form id="signupForm" onsubmit="handleSignup(event)">
+                <!-- Basic Information -->
+                <div style="margin-bottom: 2rem;">
+                    <h3 style="color: var(--primary-color); font-weight: bold; margin-bottom: 1rem; font-size: 1.1rem;">
+                        <i class="fas fa-user-circle"></i> Basic Information
+                    </h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="firstName">First Name <span class="required">*</span></label>
+                            <input 
+                                type="text" 
+                                id="firstName" 
+                                placeholder="John"
+                                required
+                                oninput="generateLoginId()"
+                            >
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="lastName">Last Name <span class="required">*</span></label>
+                            <input 
+                                type="text" 
+                                id="lastName" 
+                                placeholder="Doe"
+                                required
+                                oninput="generateLoginId()"
+                            >
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Email <span class="required">*</span></label>
+                            <input 
+                                type="email" 
+                                id="email" 
+                                placeholder="john.doe@company.com"
+                                required
+                            >
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="mobile">Mobile <span class="required">*</span></label>
+                            <input 
+                                type="tel" 
+                                id="mobile" 
+                                placeholder="+91 XXXXXXXXXX"
+                                required
+                            >
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="dateOfJoining">Date of Joining <span class="required">*</span></label>
+                            <input 
+                                type="date" 
+                                id="dateOfJoining" 
+                                required
+                                oninput="generateLoginId()"
+                            >
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="department">Department <span class="required">*</span></label>
+                            <select id="department" required>
+                                <option value="">Select Department</option>
+                                <option value="IT">IT</option>
+                                <option value="HR">HR</option>
+                                <option value="Finance">Finance</option>
+                                <option value="Operations">Operations</option>
+                                <option value="Sales">Sales</option>
+                                <option value="Marketing">Marketing</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Employment Information -->
+                <div style="margin-bottom: 2rem;">
+                    <h3 style="color: var(--primary-color); font-weight: bold; margin-bottom: 1rem; font-size: 1.1rem;">
+                        <i class="fas fa-briefcase"></i> Employment Information
+                    </h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="jobPosition">Job Position <span class="required">*</span></label>
+                            <input 
+                                type="text" 
+                                id="jobPosition" 
+                                placeholder="Software Engineer"
+                                required
+                            >
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="manager">Manager Name</label>
+                            <input 
+                                type="text" 
+                                id="manager" 
+                                placeholder="Manager Name"
+                            >
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="company">Company</label>
+                            <input 
+                                type="text" 
+                                id="company" 
+                                placeholder="Company Name"
+                            >
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Auto-Generated Credentials -->
+                <div class="auto-generated">
+                    <h3>
+                        <i class="fas fa-key"></i> Auto-Generated Credentials
+                    </h3>
+                    
+                    <div class="auto-generated-item">
+                        <label>Login ID:</label>
+                        <code>
+                            <span id="generatedLoginId">OI________</span>
+                            <button type="button" class="copy-btn" onclick="copyToClipboard('generatedLoginId')">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                        </code>
+                    </div>
+                    
+                    <div class="auto-generated-item">
+                        <label>Default Password:</label>
+                        <code>
+                            <span id="generatedPassword">Odoo@1234</span>
+                            <button type="button" class="copy-btn" onclick="copyToClipboard('generatedPassword')">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                        </code>
+                    </div>
+                    
+                    <small style="color: #999; margin-top: 0.75rem; display: block;">
+                        Employee must change password on first login
+                    </small>
+                </div>
+                
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-user-plus"></i> Add Employee
+                    </button>
+                    <a href="index.html" style="text-decoration: none;">
+                        <button type="button" class="btn btn-secondary" style="width: 100%;">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/signup.js"></script>
+</body>
+</html>
